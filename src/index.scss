@@ -1,0 +1,59 @@
+@import "./global";
+.container {
+  width: 80%;
+  margin: 0 auto;
+}
+header {
+  text-align: center;
+  height: 5rem;
+  padding: 1rem 0;
+  font-weight: bold;
+}
+.card {
+  max-width: 400px;
+  padding: 1rem;
+  box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.02),
+    0 6.7px 5.3px rgba(0, 0, 0, 0.028), 0 12.5px 10px rgba(0, 0, 0, 0.035),
+    0 22.3px 17.9px rgba(0, 0, 0, 0.042), 0 41.8px 33.4px rgba(0, 0, 0, 0.05),
+    0 100px 80px rgba(0, 0, 0, 0.07);
+  .card-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 4rem;
+    .avatar {
+      height: 40px;
+      width: 40px;
+      background: #6f00ff;
+      border-radius: 50%;
+    }
+    .info {
+      margin-left: 1rem;
+      .title {
+        color: rgb(56, 56, 56);
+        font-size: 1.1rem;
+      }
+      .instructor {
+        font-weight: bold;
+        color: #000;
+      }
+    }
+  }
+  .card-body {
+    display: flex;
+    margin-bottom: 3rem;
+    i {
+      font-size: 1.2rem !important;
+    }
+    .description {
+      color: rgb(71, 71, 71);
+      margin-left: 2rem;
+    }
+  }
+  .card-footer {
+    display: flex;
+    .footer-info {
+      margin-left: 2rem;
+    }
+  }
+}
