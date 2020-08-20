@@ -7,6 +7,10 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
+import TextField from "@material-ui/core/TextField";
+import SearchIcon from "@material-ui/icons/Search";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import Fuse from "fuse.js";
 
 function App() {
   const [course, setCourse] = useState();
@@ -18,6 +22,23 @@ function App() {
   const [categoryList, setCategoryList] = useState();
 
   const [value, setValue] = React.useState("All");
+
+  const options = {
+    isCaseSensitive: true,
+    shouldSort: true,
+    minMatchCharLength: 1,
+    threshold: 0,
+    includeScore: true,
+    keys: [
+      "category",
+      "description",
+      "end_date",
+      "estimated_workload",
+      "instructor_name",
+      "start_date",
+      "title",
+    ],
+  };
 
   useEffect(() => {
     axios
@@ -38,7 +59,6 @@ function App() {
       .then((res) => {
         setCourse(JSON.parse(res.data.payload));
         setShowCourse(true);
-        // console.log(JSON.parse(res.data.payload));
       });
     axios
       .get(
@@ -62,7 +82,7 @@ function App() {
 
   const handleChange = (event) => {
     setValue(event.target.value);
-    console.log(event.target.value);
+    // console.log(event.target.value);
     const RadioValue = event.target.value;
     if (RadioValue === "All") {
       setShowFilter(false);
@@ -71,7 +91,7 @@ function App() {
       const radioArray = [...course].filter((item, index) => {
         return item.category === RadioValue;
       });
-      console.log(radioArray);
+      // console.log(radioArray);
       setShowCourse(false);
       setFilter(radioArray);
       setShowFilter(true);
@@ -79,11 +99,44 @@ function App() {
 
     // setCourse(radioArray);
   };
+
+  function handleSearch(event) {
+    console.log(event.target.value);
+    const searchTerm = event.target.value;
+    const fuse = new Fuse(course, options);
+    if (!searchTerm) {
+      setShowCourse(true);
+    } else {
+      let result = fuse.search(searchTerm);
+      result = result.map((item) => item.item);
+      // console.log(result);
+      setShowCourse(false);
+      setFilter(result);
+      setShowFilter(true);
+    }
+  }
+
   return (
     <div className="App">
       <header>Course Finder</header>
+      <div className="search">
+        <TextField
+          onChange={handleSearch}
+          id="input-with-icon-textfield"
+          label="Filter Courses"
+          type="search"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+      </div>
+
       <FormControl component="fieldset">
-        <FormLabel component="legend">Gender</FormLabel>
+        <FormLabel component="legend">Category</FormLabel>
         <RadioGroup
           aria-label="Categories"
           name="Category"
