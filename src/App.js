@@ -10,6 +10,8 @@ import FormLabel from "@material-ui/core/FormLabel";
 import TextField from "@material-ui/core/TextField";
 import SearchIcon from "@material-ui/icons/Search";
 import InputAdornment from "@material-ui/core/InputAdornment";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
 import Fuse from "fuse.js";
 
 function App() {
@@ -58,6 +60,7 @@ function App() {
       )
       .then((res) => {
         setCourse(JSON.parse(res.data.payload));
+        console.log(JSON.parse(res.data.payload));
         setShowCourse(true);
       });
     axios
@@ -119,119 +122,163 @@ function App() {
   return (
     <div className="App">
       <header>Course Finder</header>
-      <div className="search">
-        <TextField
-          onChange={handleSearch}
-          id="input-with-icon-textfield"
-          label="Filter Courses"
-          type="search"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
-      </div>
-
-      <FormControl component="fieldset">
-        <FormLabel component="legend">Category</FormLabel>
-        <RadioGroup
-          aria-label="Categories"
-          name="Category"
-          value={value}
-          onChange={handleChange}
-        >
-          <FormControlLabel
-            value="All"
-            control={<Radio color="primary" />}
-            label="All"
-          />
-
-          {categoryList &&
-            categoryList.map((item, index) => {
-              return (
-                <FormControlLabel
-                  key={index}
-                  value={item}
-                  control={<Radio color="primary" />}
-                  label={item}
-                />
-              );
-            })}
-        </RadioGroup>
-      </FormControl>
       <div className="container">
-        <p style={{ margin: "0 0 10px 0", fontWeight: "500", color: "grey" }}>
-          {course && course.length} courses open for registration
-        </p>
+        <Grid container spacing={3}>
+          <Grid item sm={12} md={4}>
+            <div className="search">
+              <Typography variant="h6" gutterBottom>
+                Search for keywords
+              </Typography>
+              <TextField
+                onChange={handleSearch}
+                id="input-with-icon-textfield"
+                label="Filter Courses"
+                type="search"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </div>
 
-        {showCourse && (
-          <div className="grid">
-            {course &&
-              course.map((item, index) => {
-                return (
-                  <Card
-                    key={index}
-                    title={item.title}
-                    instructor={item.instructor_name}
-                    description={item.description}
-                    registration={
-                      new Date() < item.start_date
-                        ? `Pre Registration`
-                        : item.start_date < new Date() &&
-                          new Date() < item.end_date
-                        ? `Ongoing`
-                        : `Completed`
-                    }
-                    start={<Moment format="MMMM D">{item.start_date}</Moment>}
-                    end={<Moment format="MMMM D">{item.end_date}</Moment>}
-                    duration={
-                      <Moment diff={item.start_date} unit="weeks">
-                        {item.end_date}
-                      </Moment>
-                    }
-                    workload={item.estimated_workload}
+            {/* RadioGroup */}
+            <div className="radio">
+              <FormControl component="fieldset">
+                <FormLabel component="legend">
+                  <Typography variant="h6" gutterBottom>
+                    Category
+                  </Typography>
+                </FormLabel>
+                <RadioGroup
+                  aria-label="Categories"
+                  name="Category"
+                  value={value}
+                  onChange={handleChange}
+                >
+                  <FormControlLabel
+                    value="All"
+                    control={<Radio color="primary" />}
+                    label="All"
                   />
-                );
-              })}
-          </div>
-        )}
 
-        {/* Filtered courses */}
+                  {categoryList &&
+                    categoryList.map((item, index) => {
+                      return (
+                        <FormControlLabel
+                          key={index}
+                          value={item}
+                          control={<Radio color="primary" />}
+                          label={item}
+                        />
+                      );
+                    })}
+                </RadioGroup>
+              </FormControl>
+            </div>
+          </Grid>
+          <Grid item sm={12} md={8}>
+            <div>
+              {showCourse && (
+                <div>
+                  <p
+                    style={{
+                      margin: "0 0 10px 0",
+                      fontWeight: "500",
+                      color: "grey",
+                    }}
+                  >
+                    {course && course.length} courses open for registration
+                  </p>
+                  <div className="grid">
+                    {course &&
+                      course.map((item, index) => {
+                        return (
+                          <Card
+                            key={index}
+                            title={item.title}
+                            instructor={item.instructor_name}
+                            description={item.description}
+                            registration={
+                              new Date() < item.start_date
+                                ? `Pre Registration`
+                                : item.start_date < new Date() &&
+                                  new Date() < item.end_date
+                                ? `Ongoing`
+                                : `Completed`
+                            }
+                            start={
+                              <Moment format="MMMM D">{item.start_date}</Moment>
+                            }
+                            end={
+                              <Moment format="MMMM D">{item.end_date}</Moment>
+                            }
+                            duration={
+                              <Moment diff={item.start_date} unit="weeks">
+                                {item.end_date}
+                              </Moment>
+                            }
+                            workload={item.estimated_workload}
+                          />
+                        );
+                      })}
+                  </div>
+                </div>
+              )}
 
-        {showFilter && (
-          <div className="grid">
-            {filter &&
-              filter.map((item, index) => {
-                return (
-                  <Card
-                    key={index}
-                    title={item.title}
-                    instructor={item.instructor_name}
-                    description={item.description}
-                    registration={
-                      new Date() < item.start_date
-                        ? `Pre Registration`
-                        : item.start_date < new Date() &&
-                          new Date() < item.end_date
-                        ? `Ongoing`
-                        : `Completed`
-                    }
-                    start={<Moment format="MMMM D">{item.start_date}</Moment>}
-                    end={<Moment format="MMMM D">{item.end_date}</Moment>}
-                    duration={
-                      <Moment diff={item.start_date} unit="weeks">
-                        {item.end_date}
-                      </Moment>
-                    }
-                    workload={item.estimated_workload}
-                  />
-                );
-              })}
-          </div>
-        )}
+              {/* Filtered courses */}
+
+              {showFilter && (
+                <div>
+                  <p
+                    style={{
+                      margin: "0 0 10px 0",
+                      fontWeight: "500",
+                      color: "grey",
+                    }}
+                  >
+                    {filter && filter.length} courses open for registration
+                  </p>
+                  <div className="grid">
+                    {filter &&
+                      filter.map((item, index) => {
+                        return (
+                          <Card
+                            key={index}
+                            title={item.title}
+                            instructor={item.instructor_name}
+                            description={item.description}
+                            registration={
+                              new Date() < item.start_date
+                                ? `Pre Registration`
+                                : item.start_date < new Date() &&
+                                  new Date() < item.end_date
+                                ? `Ongoing`
+                                : `Completed`
+                            }
+                            start={
+                              <Moment format="MMMM D">{item.start_date}</Moment>
+                            }
+                            end={
+                              <Moment format="MMMM D">{item.end_date}</Moment>
+                            }
+                            duration={
+                              <Moment diff={item.start_date} unit="weeks">
+                                {item.end_date}
+                              </Moment>
+                            }
+                            workload={item.estimated_workload}
+                          />
+                        );
+                      })}
+                  </div>
+                </div>
+              )}
+            </div>
+          </Grid>
+        </Grid>
       </div>
     </div>
   );
