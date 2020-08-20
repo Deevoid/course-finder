@@ -18,10 +18,9 @@ header {
 
 .card {
   position: relative;
-  // width: 185px;
   overflow: hidden;
   border-radius: 10px;
-  // max-width: 400px;
+  max-width: 400px;
   border: solid 1px rgb(245, 243, 243);
   padding: 1rem;
   box-shadow: 0 6.7px 5.3px rgba(0, 0, 0, 0.012),
@@ -42,6 +41,7 @@ header {
       .title {
         color: rgb(56, 56, 56);
         font-size: 1.1rem;
+        font-weight: 550;
       }
       .instructor {
         font-weight: bold;
