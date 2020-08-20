@@ -109,6 +109,7 @@ function App() {
     const fuse = new Fuse(course, options);
     if (!searchTerm) {
       setShowCourse(true);
+      setShowFilter(false);
     } else {
       let result = fuse.search(searchTerm);
       result = result.map((item) => item.item);
